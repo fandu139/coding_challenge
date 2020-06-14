@@ -24,7 +24,7 @@ const LayoutBody = React.memo(function LayoutBody({
     <StyledMain
       background={background}
       hasFooter={hasFooter}
-      hasNavigation={hasNavigation}
+      hasNavigation={!hasNavigation}
     >
       {children}
     </StyledMain>

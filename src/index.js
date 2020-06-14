@@ -3,10 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/router';
 import * as serviceWorker from './serviceWorker';
+import { StoreProvider, createStore } from 'easy-peasy';
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+import model from './easyPeasy/model'
+
+const store = createStore(model)
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <StoreProvider store={store}>
+      <App />
+    </StoreProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
