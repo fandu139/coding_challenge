@@ -1,56 +1,62 @@
-import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import Flex from "../../uikit/flex";
-// import PokemonSmallCard from "../../uikit/smallCard";
+import React, { useEffect } from "react";
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import Layout from "../../../uikit/layout";
 import Header from "../../../uikit/header";
 import Footer from "../../../uikit/footer";
-// import IFRender from "../../lib/ifrender";
 import ButtonCostum from "../../../uikit/button"
-// import Loading from "../../uikit/loading"
-// import Filter from "./filter"
-// import { queryGQL } from "../../config/schema"
+import { Card, Button, Row, Col } from 'react-bootstrap';
+import { SEMBAKO } from '../../../image'
 
-// function ListCard({ data }) {
-//   return data.map(item => {
-//     return (
-//       <PokemonSmallCard
-//         key={item.id}
-//         id={item.id}
-//         image={item.image}
-//         imageAlt={item.name}
-//         title={item.name}
-//         fastAttack={item.attacks}
-//         specialAttack={item.attacks}
-//         maxHP={item.maxHP}
-//         maxCP={item.maxCP}
-//         classification={item.classification}
-//         resistant={item.resistant}
-//         weaknesses={item.weaknesses}
-//         types={item.types}
-//       />
-//     );
-//   });
-// }
+function ListItem({ data, handleAddQuanty, handleLessQuanty }) {
+  return (
+    <div>
+        {data.map(item =>
+          <Card className="text-center"  key={item.id}>
+            <Card.Header>{item.title}</Card.Header>
+            <Card.Img variant="top" src={SEMBAKO} />
+            <Card.Body>
+              <Card.Title>{item.title}</Card.Title>
+              <Card.Text>
+                {item.title}
+              </Card.Text>
 
-// function getData({page, setData, setDataFilter, setCategory}) {
-//   const totalData = page * 10;
-//   axios({
-//     url: "https://graphql-pokemon.now.sh/",
-//     method: "post",
-//     data: {
-//       query: queryGQL(totalData)
-//     }
-//   }).then(result => {
-//     setData(result.data.data.pokemons);
-//     setDataFilter(result.data.data.pokemons)
-//   });
-// }
+              <Row>
+                <Col><Button variant="danger" onClick={() => handleLessQuanty(item)}> - </Button></Col>
+                <Col> {item.quanty} </Col>
+                <Col><Button variant="primary" onClick={() => handleAddQuanty(item)}> + </Button></Col>
+              </Row>
+              
+            </Card.Body>
+            <Card.Footer className="text-muted">2 days ago</Card.Footer>
+          </Card>
+        )}
+    </div>
+  )
+}
 
 function CheckoutStepOne() {
-  const [data, setData] = useState('')
+  const products = useStoreState(state => state.products)
+  const fetchProduct = useStoreActions(actions => actions.fetchProduct)
+  const addQuantyProduct = useStoreActions(actions => actions.addQuanty)
+  const lessQuantyProduct = useStoreActions(actions => actions.lessQuanty)
 
-  const title = "Navigator";
+  useEffect(() => {
+    fetchProduct();
+  }, []);
+
+  const showProduct = () => {
+    // console.log("arrow function", products)
+  }
+
+  const handleAddQuanty = (item) => {
+    addQuantyProduct(item)
+  }
+
+  const handleLessQuanty = (item) => {
+    lessQuantyProduct(item)
+  }
+
+  const title = "Checkout";
 
   return (
     <Layout
@@ -61,11 +67,11 @@ function CheckoutStepOne() {
       footer={{
         component: 
         <Footer>
-          <ButtonCostum typeVarian={"success"} titleButton={"checkout"}/>
+          <ButtonCostum press={showProduct} typeVarian={"success"} titleButton={"Checkout"}/>
         </Footer>
       }}
     >
-     Checkout Step One
+     <ListItem data={products} handleAddQuanty={handleAddQuanty} handleLessQuanty={handleLessQuanty}/>
     </Layout>
   );
 }
