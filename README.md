@@ -1,7 +1,8 @@
 # README
 
 ## Introducution
-This is an Aplication using framework React JS whith method PWA (Progresive Web Apps). you can look demo this apps [here](https://romantic-aryabhata-ddda1e.netlify.app/) 
+This is an Application using framework React JS whith method PWA (Progressive Web Apps). you can look demo this apps [here](https://romantic-aryabhata-ddda1e.netlify.app/)
+<br><b>Note : </b> if you get <b>Error/Problem consequence CORS</b> Get Data API on run demo, you can clone this repositori end run this app
 
 ## How To Install
 
