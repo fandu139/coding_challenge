@@ -1,73 +1,102 @@
 import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import Flex from "../../uikit/flex";
-// import PokemonSmallCard from "../../uikit/smallCard";
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import Layout from "../../../uikit/layout";
-// import Header from "./header";
-// import Footer from "./footer";
-// import IFRender from "../../lib/ifrender";
-// import ButtonCostum from "../../uikit/button"
-// import Loading from "../../uikit/loading"
-// import Filter from "./filter"
-// import { queryGQL } from "../../config/schema"
+import Header from "../../../uikit/header";
+import Footer from "../../../uikit/footer";
+import ButtonCostum from "../../../uikit/button"
+import { Card, Button, Row, Col } from 'react-bootstrap';
+import { SEMBAKO } from '../../../image'
+import {
+  useHistory
+} from "react-router-dom";
 
-// function ListCard({ data }) {
-//   return data.map(item => {
-//     return (
-//       <PokemonSmallCard
-//         key={item.id}
-//         id={item.id}
-//         image={item.image}
-//         imageAlt={item.name}
-//         title={item.name}
-//         fastAttack={item.attacks}
-//         specialAttack={item.attacks}
-//         maxHP={item.maxHP}
-//         maxCP={item.maxCP}
-//         classification={item.classification}
-//         resistant={item.resistant}
-//         weaknesses={item.weaknesses}
-//         types={item.types}
-//       />
-//     );
-//   });
-// }
+function ListItem({ data }) {
+  return (
+    <div>
+        {data.map(item =>
+          <Card className="text-center"  key={item.id}>
+            <Card.Header>{item.title}</Card.Header>
+            <Card.Img variant="top" src={SEMBAKO} />
+            <Card.Body>
+              <Card.Title>{item.title}</Card.Title>
+              <Card.Text>
+                {item.title}
+              </Card.Text>
 
-// function getData({page, setData, setDataFilter, setCategory}) {
-//   const totalData = page * 10;
-//   axios({
-//     url: "https://graphql-pokemon.now.sh/",
-//     method: "post",
-//     data: {
-//       query: queryGQL(totalData)
-//     }
-//   }).then(result => {
-//     setData(result.data.data.pokemons);
-//     setDataFilter(result.data.data.pokemons)
-//   });
-// }
+              <Row>
+                <Col> {item.quanty} </Col>
+              </Row>
+              
+            </Card.Body>
+            <Card.Footer className="text-muted">2 days ago</Card.Footer>
+          </Card>
+        )}
+    </div>
+  )
+}
 
-function CheckoutStepOne() {
-  const [data, setData] = useState('')
+function filterData(products) {
+  const result = products.filter(product => product.quanty > 0);
+  return result;
+}
 
-  const title = "Checkout Step One";
+function CheckoutStepTwo() {
+  const [data, setData] = useState([]) 
+  
+  const products = useStoreState(state => state.products)
+
+  const history = useHistory()
+
+  useEffect(() => {
+    setData(filterData(products))
+  }, []);
+
+  const goBack = () => {
+    history.push(
+      {
+        pathname: 'CheckoutStepOne', 
+        state: {
+          prevPage: 'CheckoutStepTwo'
+        }
+      }
+    )
+  }
+
+  const buy = () => {
+    history.goBack()
+  }
+
+  const Quanty = () => {
+    let sum = 0
+    products.filter(product => {
+      if (product.quanty > 0) sum = sum + product.quanty 
+      return sum
+    })
+    return sum
+  }
+  
+  const title = "Checkout";
 
   return (
     <Layout
       title="Checkout Step One"
-      // navigation={{
-      //   component: <Header variant="detail" title={title} />
-      // }}
-      // footer={{
-      //   component: 
-      //   <Footer 
-      //     data={data}
-      //   />
-      // }}
+      navigation={{
+        component: <Header variant="detail" title={title} />
+      }}
+      footer={{
+        component: 
+        <Footer>
+            <Row>
+              <Col> <ButtonCostum press={goBack} typeVarian={"danger"} titleButton={"Back"}/> </Col>
+              <Col> <ButtonCostum press={buy} typeVarian={"warning"} titleButton={"Buy"}/> </Col>
+              <Col> Total Qty : <Quanty /> </Col>
+            </Row>
+        </Footer>
+      }}
     >
-     Checkout Step One
+     <ListItem data={data} />
     </Layout>
   );
 }
 
-export default CheckoutStepOne;
+export default CheckoutStepTwo;

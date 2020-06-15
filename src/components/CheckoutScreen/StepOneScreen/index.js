@@ -6,6 +6,9 @@ import Footer from "../../../uikit/footer";
 import ButtonCostum from "../../../uikit/button"
 import { Card, Button, Row, Col } from 'react-bootstrap';
 import { SEMBAKO } from '../../../image'
+import {
+  Link, useLocation 
+} from "react-router-dom";
 
 function ListItem({ data, handleAddQuanty, handleLessQuanty }) {
   return (
@@ -40,13 +43,14 @@ function CheckoutStepOne() {
   const addQuantyProduct = useStoreActions(actions => actions.addQuanty)
   const lessQuantyProduct = useStoreActions(actions => actions.lessQuanty)
 
-  useEffect(() => {
-    fetchProduct();
-  }, []);
+  const location = useLocation();
 
-  const showProduct = () => {
-    // console.log("arrow function", products)
-  }
+  useEffect(() => {
+    const prevPage = location.state && location.state.prevPage
+    if (prevPage !== 'CheckoutStepTwo'){ 
+      fetchProduct();
+    }
+  }, []);
 
   const handleAddQuanty = (item) => {
     addQuantyProduct(item)
@@ -56,7 +60,16 @@ function CheckoutStepOne() {
     lessQuantyProduct(item)
   }
 
-  const title = "Checkout";
+  const Quanty = () => {
+    let sum = 0
+    products.filter(product => {
+      if (product.quanty > 0) sum = sum + product.quanty 
+      return sum
+    })
+    return sum
+  }
+
+  const title = "Product";
 
   return (
     <Layout
@@ -67,7 +80,14 @@ function CheckoutStepOne() {
       footer={{
         component: 
         <Footer>
-          <ButtonCostum press={showProduct} typeVarian={"success"} titleButton={"Checkout"}/>
+          <Row>
+            <Col>
+              <Link to={`/CheckoutStepTwo`}>
+                <ButtonCostum typeVarian={"success"} titleButton={"Checkout"}/>
+              </Link>
+            </Col>
+            <Col> Total Qty : <Quanty /> </Col>
+          </Row>
         </Footer>
       }}
     >
