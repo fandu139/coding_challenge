@@ -41,6 +41,12 @@ const model = {
       return item
     });
   }),
+
+  getBuyProduct: action((state, payload) => {
+    return {
+      name: "fandu"
+    }
+  }),
 };
 
 export default model;
